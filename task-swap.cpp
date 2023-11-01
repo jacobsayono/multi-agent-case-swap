@@ -1,9 +1,18 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>  // std::find()
+
+// Calculate cost for a task sequence based on the provided cost matrix
+float calculateCost(const std::vector<int>& sequence, float costMatrix[]) {
+    float totalCost = 0.0;
+    for (size_t i = 0; i < sequence.size() - 1; i++) {
+        totalCost += costMatrix[sequence[i] * 4 + sequence[i+1]]; // Assuming the matrix size is 4x4
+    }
+    return totalCost;
+}
 
 // Function to facilitate task swaps between robots
-float* checkSwap(size_t num_tasks, float cost1[], float cost2[], std::vector<int> *t1, std::vector<int> *t2) 
-{
+float* checkSwap(size_t num_tasks, float cost1[], float cost2[], std::vector<int> *t1, std::vector<int> *t2) {
     /*
     Goal:
     -For each currently assigned task:
@@ -27,14 +36,62 @@ float* checkSwap(size_t num_tasks, float cost1[], float cost2[], std::vector<int
     code in main.
     */
 
-    // Example changing task assignment
-    int old_ind = 0;
-    int new_ind = 1;
-    t2->insert(t2->begin()+new_ind,(*t1)[old_ind]);
-    t1->erase(t1->begin()+old_ind);
+    // // Example changing task assignment
+    // int old_ind = 0;
+    // int new_ind = 1;
+    // t2->insert(t2->begin()+new_ind,(*t1)[old_ind]);
+    // t1->erase(t1->begin()+old_ind);
 
-    // Return the following array is no swap is beneficial
+    // // Return the following array is no swap is beneficial
+    // static float swap[3] = {-1, 0, 0};
+
+    // return swap;
+
     static float swap[3] = {-1, 0, 0};
+    float currentMakespan = std::max(calculateCost(*t1, cost1), calculateCost(*t2, cost2));
+    float currentSumOfCosts = calculateCost(*t1, cost1) + calculateCost(*t2, cost2);
+
+    float bestDeltaMakespan = 0;
+    float bestDeltaSumOfCosts = 0;
+
+    for (size_t idx = 0; idx < t1->size(); idx++) {
+        int task = (*t1)[idx];
+        
+        // Check all possible positions in t2
+        for (size_t pos = 0; pos <= t2->size(); pos++) {
+            t2->insert(t2->begin() + pos, task);
+            t1->erase(t1->begin() + idx);
+            
+            float newMakespan = std::max(calculateCost(*t1, cost1), calculateCost(*t2, cost2));
+            float newSumOfCosts = calculateCost(*t1, cost1) + calculateCost(*t2, cost2);
+
+            float deltaMakespan = newMakespan - currentMakespan;
+            float deltaSumOfCosts = newSumOfCosts - currentSumOfCosts;
+
+            if (deltaMakespan < bestDeltaMakespan || 
+               (deltaMakespan == bestDeltaMakespan && deltaSumOfCosts < bestDeltaSumOfCosts)) {
+                bestDeltaMakespan = deltaMakespan;
+                bestDeltaSumOfCosts = deltaSumOfCosts;
+                swap[0] = task;
+                swap[1] = bestDeltaMakespan;
+                swap[2] = bestDeltaSumOfCosts;
+            }
+
+            // Restore original state
+            t1->insert(t1->begin() + idx, task);
+            t2->erase(t2->begin() + pos);
+        }
+    }
+
+    // If a beneficial swap is found, perform the swap
+    if (swap[0] != -1) {
+        int task = static_cast<int>(swap[0]);
+        auto it = std::find(t1->begin(), t1->end(), task);
+        if (it != t1->end()) {
+            t1->erase(it);
+            t2->push_back(task); // The exact position may be refined for further optimization
+        }
+    }
 
     return swap;
 }
