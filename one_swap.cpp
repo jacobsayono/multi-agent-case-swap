@@ -1,8 +1,7 @@
 #include <iostream>
 #include <vector>  // <list> for paths would be better since we can insert/remove at O(1)
 #include <algorithm>
-
-
+#include <chrono>  // benchmark performance
 
 // one-swap (robot1 give ONE task to robot2) -- recursive one task assignment
 // two-swap (robot1 give ONE task to robot2 but also receives ONE task in return, or robot1 gives TWO tasks to robot2)
@@ -84,130 +83,90 @@ struct SwapResult {
     int task_to_swap;
     float makespan_diff;
     float sum_of_costs_diff;
+    int swap_path;
 };
 
-/*
-    Goal:
-    -For each currently assigned task:
-        -Find the new path cost for that robot if that task was not assigned to it 
-         (Assuming the order of the other tasks does not change)
-        -For each robot this task is not assigned to:
-            -Check the path cost for that robot with this task inserted at every
-             possible point in its current task sequence
-            -Save the lowest path cost and the position in the sequence
-        -Find a best swap for this task that minimizes the total makespan first
-         and sum-of-costs second
-    -Select the best task to swap and modify the task assignment sequences. Return
-     the task number for the task that was swapped and the change in makespan and 
-     sum-of-costs.
-    -If no task decreases the makespan (or decreases sum-of-costs without changing
-     the makespan), do not change the task assignment and return the array given 
-     below
+// check the new path costs after a task swap and update the best swap if it is better
+SwapResult evaluate_task_swap(int num_tasks, const std::vector<int>& path_from, const std::vector<int>& path_to, const float cost_from[], const float cost_to[], int task_to_swap, float initial_makespan, float initial_sum_of_costs, float& best_makespan_diff, float& best_sum_of_costs_diff, int& best_insert_position, int from_path_id) {
+    SwapResult result = {-1, 0.0f, 0.0f};
+    float new_path_from_cost = calc_swapped_path_cost(path_from, cost_from, num_tasks, task_to_swap, -1, -1);
 
-    Note: The task assignments are passed as pointers, you can modify them in this 
-    function and they will be changed in main. You should not need to change any 
-    code in main.
-*/
+    for (int insert_pos = 0; insert_pos <= path_to.size(); ++insert_pos) {
+        float new_path_to_cost = calc_swapped_path_cost(path_to, cost_to, num_tasks, -1, task_to_swap, insert_pos);
+        float new_makespan = calc_makespan(new_path_from_cost, new_path_to_cost);
+        float new_sum_of_costs = calc_sum_of_costs(new_path_from_cost, new_path_to_cost);
+
+        float makespan_diff = new_makespan - initial_makespan;
+        float sum_of_costs_diff = new_sum_of_costs - initial_sum_of_costs;
+
+        if (makespan_diff < best_makespan_diff || (makespan_diff == best_makespan_diff && sum_of_costs_diff < best_sum_of_costs_diff)) {
+            best_makespan_diff = makespan_diff;
+            best_sum_of_costs_diff = sum_of_costs_diff;
+            best_insert_position = insert_pos;
+            result.task_to_swap = task_to_swap;
+            result.makespan_diff = makespan_diff;
+            result.sum_of_costs_diff = sum_of_costs_diff;
+            result.swap_path = from_path_id;
+        }
+    }
+
+    return result;
+}
 
 // function to perform a one swap if it's optimal. returns an array for the swapped task number, makespan diff, and sum_of_costs diff
 // _ -> 1 -> _ -> 2 -> _
-SwapResult one_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const float cost1[], const float cost2[]) {
-    // get the cost of each path
-    float path1_cost = calc_path_cost(num_tasks, path1, cost1);
-    float path2_cost = calc_path_cost(num_tasks, path2, cost2);
+// Function to find the best task swap between two paths
+SwapResult one_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const float cost1[], const float cost2[]) 
+{
+    float initial_makespan = calc_makespan(calc_path_cost(num_tasks, path1, cost1), calc_path_cost(num_tasks, path2, cost2));
+    float initial_sum_of_costs = calc_sum_of_costs(calc_path_cost(num_tasks, path1, cost1), calc_path_cost(num_tasks, path2, cost2));
 
-    // get the initial makespan and sum_of_costs
-    float initial_makespan = calc_makespan(path1_cost, path2_cost);
-    float initial_sum_of_costs = calc_sum_of_costs(path1_cost, path2_cost);
-
-    // initialize variables to track the best swap found
     float best_makespan_diff = std::numeric_limits<float>::max();
     float best_sum_of_costs_diff = std::numeric_limits<float>::max();
     int best_task_to_swap = -1;
-    int best_swap_path = -1;  // 1 for path1 to path2, 2 for path2 to path1
+    int best_swap_path = -1;
     int best_insert_position = -1;
 
-    SwapResult result = {-1, 0.0f, 0.0f};
-
-    // check each task in path1 to see if moving it to path2 improves makespan or sum_of_costs
+    // Evaluate potential swaps from path1 to path2
     for (int i = 0; i < path1.size(); ++i) {
         int task_to_swap = path1[i];
-        // calculate new path cost for robot 1 without the task
-        float new_path1_cost = calc_swapped_path_cost(path1, cost1, num_tasks, task_to_swap, -1, -1);
-        // try inserting the task at every position in robot 2's path
-        for (int insert_pos = 0; insert_pos <= path2.size(); ++insert_pos) {
-            float new_path2_cost = calc_swapped_path_cost(path2, cost2, num_tasks, -1, task_to_swap, insert_pos);
-            float new_makespan = calc_makespan(new_path1_cost, new_path2_cost);
-            float new_sum_of_costs = calc_sum_of_costs(new_path1_cost, new_path2_cost);
-
-            // check if this swap improves makespan and/or sum_of_costs
-            if (new_makespan < initial_makespan ||
-                (new_makespan == initial_makespan && new_sum_of_costs < initial_sum_of_costs)) {
-                // check if this is the best swap found so far based on makespan and sum_of_costs
-                float makespan_diff = new_makespan - initial_makespan;
-                float sum_of_costs_diff = new_sum_of_costs - initial_sum_of_costs;
-                if (makespan_diff < best_makespan_diff ||
-                    (makespan_diff == best_makespan_diff && sum_of_costs_diff < best_sum_of_costs_diff)) {
-                    // update the best swap found so far
-                    best_makespan_diff = makespan_diff;
-                    best_sum_of_costs_diff = sum_of_costs_diff;
-                    best_task_to_swap = task_to_swap;
-                    best_swap_path = 1;  // indicates task moved from path1 to path2
-                    best_insert_position = insert_pos;
-                }
-            }
+        // Evaluate potential swap
+        SwapResult potential_swap = evaluate_task_swap(num_tasks, path1, path2, cost1, cost2, task_to_swap, initial_makespan, initial_sum_of_costs, best_makespan_diff, best_sum_of_costs_diff, best_insert_position, 1);
+        // Update best swap if the potential swap is better
+        if (potential_swap.task_to_swap != -1) {
+            best_task_to_swap = task_to_swap;
+            best_swap_path = 1;
         }
     }
 
-    // repeat the above loop for each task in path2 to see if moving it to path1 improves makespan or sum_of_costs
+    // Evaluate potential swaps from path2 to path1
     for (int i = 0; i < path2.size(); ++i) {
         int task_to_swap = path2[i];
-        // calculate new path cost for robot 2 without the task
-        float new_path2_cost = calc_swapped_path_cost(path2, cost2, num_tasks, task_to_swap, -1, -1);
-        // try inserting the task at every position in robot 1's path
-        for (int insert_pos = 0; insert_pos <= path1.size(); ++insert_pos) {
-            float new_path1_cost = calc_swapped_path_cost(path1, cost1, num_tasks, -1, task_to_swap, insert_pos);
-            float new_makespan = calc_makespan(new_path1_cost, new_path2_cost);
-            float new_sum_of_costs = calc_sum_of_costs(new_path1_cost, new_path2_cost);
-
-            // check if this swap improves makespan and/or sum_of_costs
-            if (new_makespan < initial_makespan ||
-                (new_makespan == initial_makespan && new_sum_of_costs < initial_sum_of_costs)) {
-                // check if this is the best swap found so far based on makespan and sum_of_costs
-                float makespan_diff = new_makespan - initial_makespan;
-                float sum_of_costs_diff = new_sum_of_costs - initial_sum_of_costs;
-                if (makespan_diff < best_makespan_diff ||
-                    (makespan_diff == best_makespan_diff && sum_of_costs_diff < best_sum_of_costs_diff)) {
-                    // update the best swap found so far
-                    best_makespan_diff = makespan_diff;
-                    best_sum_of_costs_diff = sum_of_costs_diff;
-                    best_task_to_swap = task_to_swap;
-                    best_swap_path = 2;  // indicates task moved from path2 to path1
-                    best_insert_position = insert_pos;
-                }
-            }
+        // Evaluate potential swap
+        SwapResult potential_swap = evaluate_task_swap(num_tasks, path2, path1, cost2, cost1, task_to_swap, initial_makespan, initial_sum_of_costs, best_makespan_diff, best_sum_of_costs_diff, best_insert_position, 2);
+        // Update best swap if the potential swap is better
+        if (potential_swap.task_to_swap != -1) {
+            best_task_to_swap = task_to_swap;
+            best_swap_path = 2;
         }
     }
 
-
-    // if a swap was found that improves makespan or sum_of_costs, perform the swap and update the result
+    // Perform the best swap if found
     if (best_task_to_swap != -1) {
         if (best_swap_path == 1) {
+            // Remove the task from path1 and add it to path2 at the best position
             path1.erase(std::remove(path1.begin(), path1.end(), best_task_to_swap));
             path2.insert(path2.begin() + best_insert_position, best_task_to_swap);
-        } else {
+        }
+        else {
+            // Remove the task from path2 and add it to path1 at the best position
             path2.erase(std::remove(path2.begin(), path2.end(), best_task_to_swap));
             path1.insert(path1.begin() + best_insert_position, best_task_to_swap);
         }
-
-        result.task_to_swap = best_task_to_swap;
-        result.makespan_diff = best_makespan_diff;
-        result.sum_of_costs_diff = best_sum_of_costs_diff;
-        return result;
     }
 
-    // if no beneficial swap was found, return the default result indicating no swap
-    return result;
+    // Return the best swap result
+    return SwapResult{best_task_to_swap, best_makespan_diff, best_sum_of_costs_diff};
 }
 
 /*
@@ -225,7 +184,22 @@ For task 3 moving to r2:
     r1: {2}, r2: {1, 3}
 */
 
+// TODO: k-swap (recursion)
+SwapResult recursive_fcn(int counter, int limit) {
+    if (counter > limit) {
+        return SwapResult{-1, 0.0f, 0.0f, -1};
+    }
+    return recursive_fcn(counter+1, limit);
+}
+// refactor code
+// for n paths, n matrix_costs
+// increase efficient memory using pointers
+// condense into one function for repetitive code
+// benchmark between <vector> and <list> for robot path made up of task #s
+
 int main(int argc, char * argv[]) {
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     // Start by defining a cost matrix for several robots
     int num_tasks = 3;
     int matrix_size = (num_tasks+1) * (num_tasks+1);
@@ -263,7 +237,6 @@ int main(int argc, char * argv[]) {
     std::cout << "Initial r2 path cost: " << initial_path2_cost << std::endl;
     std::cout << "Initial makespan: " << initial_makespan << std::endl;
     std::cout << "Initial sum-of-costs: " << initial_sum_of_costs << std::endl;
-
     std::cout << std::endl;
 
     // Use a one_swap function to see if a swap is desirable
@@ -279,7 +252,6 @@ int main(int argc, char * argv[]) {
     std::cout << "Final r2 path cost: " << final_path2_cost << std::endl;
     std::cout << "Final makespan: " << final_makespan << std::endl;
     std::cout << "Final sum-of-costs: " << final_sum_of_costs << std::endl;
-
     std::cout << std::endl;
 
     // Print task assignments
@@ -292,10 +264,19 @@ int main(int argc, char * argv[]) {
         std::cout << path_r2[i] << std::endl;
     }
 
+    std::cout << std::endl;
+
     // Print the change in makespan and sum-of-costs
     std::cout << "Best task to swap: " << arr.task_to_swap << std::endl;
     std::cout << "Change in makespan: " << arr.makespan_diff << std::endl;
     std::cout << "Change in sum-of-costs: " << arr.sum_of_costs_diff << std::endl;
+    std::cout << std::endl;
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
+    std::cout << "Total execution time: " << elapsed.count() << " milliseconds." << std::endl;
+
 
     return 0;
 }
