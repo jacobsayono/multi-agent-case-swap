@@ -10,9 +10,11 @@
 `heuristic.cpp` uses euclidean properties to find potential tasks that can be swap. (TODO)
 
 Example:
+
 ![Desc](assets/1-swap.jpg)
 
 Results for best 1-swap:
+
 ![Result](assets/results.png)
 
 Grid implementation with (x, y) coordinates.
@@ -26,4 +28,5 @@ Now, let the last test be assigned to the robot on the left (far away from it).
 Clearly, an optimal swap would be to give this task to the robot on the right.
 
 Results verify our hypothesis:
+
 ![Grid](assets/grid.png)
