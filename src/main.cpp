@@ -4,13 +4,13 @@
 
 #include "../include/calc.h"
 #include "../include/swap.h"
+// #include "../include/grid.h"
 
 // one-swap (robot1 give ONE task to robot2) -- recursive one task assignment
 // two-swap (robot1 give ONE task to robot2 but also receives ONE task in return, or robot1 gives TWO tasks to robot2)
 // k-swap -- exponential complexity
 
 int main(int argc, char * argv[]) {
-    auto start_time = std::chrono::high_resolution_clock::now();
 
     // Start by defining a cost matrix for several robots
     int num_tasks = 3;

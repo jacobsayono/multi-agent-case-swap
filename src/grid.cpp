@@ -30,12 +30,11 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     }
 }
 
-void cost_matrix(const Position& robot, const std::vector<Position>& tasks) {
-    const int grid_size = 1 + tasks.size();
+std::vector<std::vector<int>> generate_cost_matrix(const Position& robot, const std::vector<Position>& tasks) {
+    int grid_size = tasks.size() + 1;
     std::vector<std::vector<int>> cost_matrix(grid_size, std::vector<int>(grid_size, 0));
 
-    // fill matrix
-    cost_matrix[0][0] = 0; // cost from robot to itself
+    cost_matrix[0][0] = manhattan_distance(robot, robot);
     for (int j = 0; j < tasks.size(); ++j) {
         cost_matrix[0][j + 1] = manhattan_distance(robot, tasks[j]);
         cost_matrix[j + 1][0] = manhattan_distance(tasks[j], robot);
@@ -44,11 +43,14 @@ void cost_matrix(const Position& robot, const std::vector<Position>& tasks) {
         }
     }
 
-    // print matrix
+    return cost_matrix;
+}
+
+void print_cost_matrix(const std::vector<std::vector<int>>& cost_matrix, const Position& robot) {
     std::cout << "Cost Matrix for Robot at (" << robot.x << ", " << robot.y << "):" << std::endl;
     for (int row = 0; row < cost_matrix.size(); ++row) {
         for (int col = 0; col < cost_matrix[row].size(); ++col) {
-            std::cout << cost_matrix[row][col] << "    ";
+            std::cout << cost_matrix[row][col] << "\t";
         }
         std::cout << std::endl;
     }
@@ -71,10 +73,11 @@ int main() {
 
     const int grid_size = tasks.size() + 1;
 
-    // generate cost matrix
-    for (int i = 0; i < robots.size(); ++i) {
-        cost_matrix(robots[i], tasks);
-    }
+    std::vector<std::vector<int>> cost_r0 = generate_cost_matrix(robots[0], tasks);
+    std::vector<std::vector<int>> cost_r1 = generate_cost_matrix(robots[1], tasks);
+
+    print_cost_matrix(cost_r0, robots[0]);
+    print_cost_matrix(cost_r1, robots[1]);
 
     return 0;
 }
