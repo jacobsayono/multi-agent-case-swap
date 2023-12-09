@@ -1,7 +1,7 @@
 #include "../include/calc.h"
 
 // calculate total cost of a path for a robot
-float calc_path_cost(int num_tasks, const std::vector<int>& path, const float* cost) {
+float calc_path_cost(int num_tasks, const std::vector<int>& path, const std::vector<std::vector<float>>& cost_matrix) {
     float total_path_cost = 0;
 
     /*
@@ -16,18 +16,35 @@ float calc_path_cost(int num_tasks, const std::vector<int>& path, const float* c
     // e.g.: R0 to T3 = 0 * (3+1) * 3 = 3
     // e.g.: T3 to T2 = 3 * (3+1) * 2 = 14
 
+    // if (path.empty()) {
+    //     total_path_cost = 0;
+    // }
+    // else if (path.size() == 1) {
+    //     total_path_cost = cost[path[0]];
+    // }
+    // else {
+    //     total_path_cost = cost[path[0]];
+    //     for (int i = 0; i < path.size() - 1; ++i) {
+    //         total_path_cost += cost[path[i] * (num_tasks+1) + path[i+1]];
+    //     }
+    // }
+    // return total_path_cost;
+
     if (path.empty()) {
-        total_path_cost = 0;
+        return 0;
     }
     else if (path.size() == 1) {
-        total_path_cost = cost[path[0]];
+        total_path_cost = cost_matrix[0][path[0]];
     }
     else {
-        total_path_cost = cost[path[0]];
+        total_path_cost = cost_matrix[0][path[0]];
         for (int i = 0; i < path.size() - 1; ++i) {
-            total_path_cost += cost[path[i] * (num_tasks+1) + path[i+1]];
+            int from = path[i];
+            int to = path[i + 1];
+            total_path_cost += cost_matrix[from][to];
         }
     }
+
     return total_path_cost;
 }
 
@@ -44,7 +61,8 @@ float calc_sum_of_costs(float r1, float r2) {
 }
 
 // calculate new path cost after a potential swap
-float calc_swapped_path_cost(const std::vector<int>& original_path, const float* cost, int num_tasks, int task_to_remove, int task_to_insert, int insert_pos) {
+float calc_swapped_path_cost(const std::vector<int>& original_path, const std::vector<std::vector<float>>& cost_matrix,
+                             int num_tasks, int task_to_remove, int task_to_insert, int insert_pos) {
     // create copy of original path
     std::vector<int> new_path = original_path;
 
@@ -69,5 +87,5 @@ float calc_swapped_path_cost(const std::vector<int>& original_path, const float*
     }
 
     // return new_path cost
-    return calc_path_cost(num_tasks, new_path, cost);
+    return calc_path_cost(num_tasks, new_path, cost_matrix);
 }

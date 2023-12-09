@@ -30,9 +30,9 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     }
 }
 
-std::vector<std::vector<int>> generate_cost_matrix(const Position& robot, const std::vector<Position>& tasks) {
+std::vector<std::vector<float>> generate_cost_matrix(const Position& robot, const std::vector<Position>& tasks) {
     int grid_size = tasks.size() + 1;
-    std::vector<std::vector<int>> cost_matrix(grid_size, std::vector<int>(grid_size, 0));
+    std::vector<std::vector<float>> cost_matrix(grid_size, std::vector<float>(grid_size, 0));
 
     cost_matrix[0][0] = manhattan_distance(robot, robot);
     for (int j = 0; j < tasks.size(); ++j) {
@@ -46,7 +46,7 @@ std::vector<std::vector<int>> generate_cost_matrix(const Position& robot, const 
     return cost_matrix;
 }
 
-void print_cost_matrix(const std::vector<std::vector<int>>& cost_matrix, const Position& robot) {
+void print_cost_matrix(const std::vector<std::vector<float>>& cost_matrix, const Position& robot) {
     std::cout << "Cost Matrix for Robot at (" << robot.x << ", " << robot.y << "):" << std::endl;
     for (int row = 0; row < cost_matrix.size(); ++row) {
         for (int col = 0; col < cost_matrix[row].size(); ++col) {
@@ -55,29 +55,4 @@ void print_cost_matrix(const std::vector<std::vector<int>>& cost_matrix, const P
         std::cout << std::endl;
     }
     std::cout << std::endl;
-}
-
-int main() {
-    // robot and task positions
-    std::vector<Position> robots = {{0, 0}, {4, 4}};
-    std::vector<Position> tasks = {{1, 1}, {2, 2}, {3, 3}};
-
-    // grid size
-    const int grid_width = 10;
-    const int grid_height = 10;
-
-    // print the grid
-    std::cout << "Grid Visualization:" << std::endl;
-    print_grid(robots, tasks, grid_width, grid_height);
-    std::cout << std::endl;
-
-    const int grid_size = tasks.size() + 1;
-
-    std::vector<std::vector<int>> cost_r0 = generate_cost_matrix(robots[0], tasks);
-    std::vector<std::vector<int>> cost_r1 = generate_cost_matrix(robots[1], tasks);
-
-    print_cost_matrix(cost_r0, robots[0]);
-    print_cost_matrix(cost_r1, robots[1]);
-
-    return 0;
 }

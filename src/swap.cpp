@@ -2,7 +2,8 @@
 #include "../include/calc.h"
 
 // check the new path costs after a task swap and update the best swap if it is better
-SwapResult evaluate_task_swap(int num_tasks, const std::vector<int>& path_from, const std::vector<int>& path_to, const float cost_from[], const float cost_to[], int task_to_swap, float initial_makespan, float initial_sum_of_costs, float& best_makespan_diff, float& best_sum_of_costs_diff, int& best_insert_position, int from_path_id) {
+SwapResult evaluate_task_swap(int num_tasks, const std::vector<int>& path_from, const std::vector<int>& path_to, const std::vector<std::vector<float>>& cost_from,const std::vector<std::vector<float>>& cost_to,
+                              int task_to_swap, float initial_makespan, float initial_sum_of_costs, float& best_makespan_diff, float& best_sum_of_costs_diff, int& best_insert_position, int from_path_id) {
     SwapResult result = {-1, 0.0f, 0.0f};
     float new_path_from_cost = calc_swapped_path_cost(path_from, cost_from, num_tasks, task_to_swap, -1, -1);
 
@@ -31,8 +32,7 @@ SwapResult evaluate_task_swap(int num_tasks, const std::vector<int>& path_from, 
 // function to perform a one swap if it's optimal. returns an array for the swapped task number, makespan diff, and sum_of_costs diff
 // _ -> 1 -> _ -> 2 -> _
 // Function to find the best task swap between two paths
-SwapResult one_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const float cost1[], const float cost2[]) 
-{
+SwapResult one_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const std::vector<std::vector<float>>& cost1, const std::vector<std::vector<float>>& cost2) {
     float initial_makespan = calc_makespan(calc_path_cost(num_tasks, path1, cost1), calc_path_cost(num_tasks, path2, cost2));
     float initial_sum_of_costs = calc_sum_of_costs(calc_path_cost(num_tasks, path1, cost1), calc_path_cost(num_tasks, path2, cost2));
 
@@ -100,7 +100,7 @@ For task 3 moving to r2:
 */
 
 // perform k swaps (recursive)
-SwapResult k_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const float cost1[], const float cost2[], int k) {
+SwapResult k_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const std::vector<std::vector<float>>& cost1, const std::vector<std::vector<float>>& cost2, int k) {
     if (k <= 0) {
         return SwapResult{-1, 0.0f, 0.0f, -1}; // no swap needed or possible
     }
