@@ -20,6 +20,7 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     // place tasks (O) on grid
     for (int i = 0; i < tasks.size(); ++i) {
         if (tasks[i].x >= 0 && tasks[i].x < grid_width && tasks[i].y >= 0 && tasks[i].y < grid_height) {
+            // grid[tasks[i].y][tasks[i].x] = '1' + i;
             grid[tasks[i].y][tasks[i].x] = 'O';
         }
     }

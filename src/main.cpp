@@ -49,8 +49,25 @@ int main(int argc, char * argv[]) {
     // std::vector<int> path_r1 = {1};
 
     // robot and task positions
-    std::vector<Position> robots = {{0, 0}, {9, 0}};
-    std::vector<Position> tasks = {{0, 1}, {9, 2}, {9, 1}};
+    std::vector<Position> robots = {{1, 1}, {8, 8}};
+    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}};
+
+    // Define a previous task assignment for each robot
+    // Note: this is not an optimal assignment
+    std::vector<int> path_r0 = {1,2};
+    std::vector<int> path_r1 = {3};
+
+    std::cout << "Initial task assignments for robot 0: ";
+    for (int i = 0; i < path_r0.size(); ++i) {
+        std::cout << path_r0[i] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Initial task assignments for robot 1: ";
+    for (int i = 0; i < path_r1.size(); ++i) {
+        std::cout << path_r1[i] << " ";
+    }
+    std::cout << std::endl << std:: endl;
 
     // grid size
     const int grid_width = 10;
@@ -68,11 +85,6 @@ int main(int argc, char * argv[]) {
 
     print_cost_matrix(cost_r0, robots[0]);
     print_cost_matrix(cost_r1, robots[1]);
-    
-    // Define a previous task assignment for each robot
-    // Note: this is not an optimal assignment
-    std::vector<int> path_r0 = {1,2};
-    std::vector<int> path_r1 = {3};
 
         // Calculate and print the initial path costs, makespan, and sum-of-costs
     float initial_path1_cost = calc_path_cost(num_tasks, path_r0, cost_r0);
@@ -80,8 +92,8 @@ int main(int argc, char * argv[]) {
     float initial_makespan = calc_makespan(initial_path1_cost, initial_path2_cost);
     float initial_sum_of_costs = calc_sum_of_costs(initial_path1_cost, initial_path2_cost);
 
-    std::cout << "Initial r1 path cost: " << initial_path1_cost << std::endl;
-    std::cout << "Initial r2 path cost: " << initial_path2_cost << std::endl;
+    std::cout << "Initial r0 path cost: " << initial_path1_cost << std::endl;
+    std::cout << "Initial r1 path cost: " << initial_path2_cost << std::endl;
     std::cout << "Initial makespan: " << initial_makespan << std::endl;
     std::cout << "Initial sum-of-costs: " << initial_sum_of_costs << std::endl;
     std::cout << std::endl;
@@ -98,18 +110,18 @@ int main(int argc, char * argv[]) {
     float final_makespan = calc_makespan(final_path1_cost, final_path2_cost);
     float final_sum_of_costs = calc_sum_of_costs(final_path1_cost, final_path2_cost);
 
-    std::cout << "Final r1 path cost: " << final_path1_cost << std::endl;
-    std::cout << "Final r2 path cost: " << final_path2_cost << std::endl;
+    std::cout << "Final r0 path cost: " << final_path1_cost << std::endl;
+    std::cout << "Final r1 path cost: " << final_path2_cost << std::endl;
     std::cout << "Final makespan: " << final_makespan << std::endl;
     std::cout << "Final sum-of-costs: " << final_sum_of_costs << std::endl;
     std::cout << std::endl;
 
     // Print task assignments
-    std::cout << "Printing robot 1 assignment\n";
+    std::cout << "Printing robot 0 assignment\n";
     for (int i=0; i<path_r0.size(); i++) {
         std::cout << path_r0[i] << std::endl;
     }
-    std::cout << "Printing robot 2 assignment\n";
+    std::cout << "Printing robot 1 assignment\n";
     for (int i=0; i<path_r1.size(); i++) {
         std::cout << path_r1[i] << std::endl;
     }

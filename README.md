@@ -28,3 +28,8 @@ Clearly, an optimal swap would be to give this task to the robot on the right.
 Results verify our hypothesis:
 
 ![Grid](assets/grid.png)
+
+Another example (top left robot 0, bottom right robot 1; numbered the task for better visualization):
+
+![Grid2](assets/grid2.png)
+
