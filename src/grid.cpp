@@ -13,15 +13,16 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     // place robots (X) on grid
     for (int i = 0; i < robots.size(); ++i) {
         if (robots[i].x >= 0 && robots[i].x < grid_width && robots[i].y >= 0 && robots[i].y < grid_height) {
-            grid[robots[i].y][robots[i].x] = 'X';
+            // grid[robots[i].y][robots[i].x] = 'X';
+            grid[robots[i].y][robots[i].x] = '0' + i;
         }
     }
 
     // place tasks (O) on grid
     for (int i = 0; i < tasks.size(); ++i) {
         if (tasks[i].x >= 0 && tasks[i].x < grid_width && tasks[i].y >= 0 && tasks[i].y < grid_height) {
-            // grid[tasks[i].y][tasks[i].x] = '1' + i;
-            grid[tasks[i].y][tasks[i].x] = 'O';
+            // grid[tasks[i].y][tasks[i].x] = 'O';
+            grid[tasks[i].y][tasks[i].x] = 'A' + i;
         }
     }
 
@@ -31,6 +32,9 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     }
 }
 
+// generate cost matrix from each manhattan distance between:
+// - robot & task
+// - task & task
 std::vector<std::vector<float>> generate_cost_matrix(const Position& robot, const std::vector<Position>& tasks) {
     int grid_size = tasks.size() + 1;
     std::vector<std::vector<float>> cost_matrix(grid_size, std::vector<float>(grid_size, 0));
@@ -47,6 +51,7 @@ std::vector<std::vector<float>> generate_cost_matrix(const Position& robot, cons
     return cost_matrix;
 }
 
+// print out the stored 2D vector to check calculations
 void print_cost_matrix(const std::vector<std::vector<float>>& cost_matrix, const Position& robot) {
     std::cout << "Cost Matrix for Robot at (" << robot.x << ", " << robot.y << "):" << std::endl;
     for (int row = 0; row < cost_matrix.size(); ++row) {

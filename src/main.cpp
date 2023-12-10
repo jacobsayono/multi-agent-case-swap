@@ -10,12 +10,7 @@
 // two-swap (robot1 give ONE task to robot2 but also receives ONE task in return, or robot1 gives TWO tasks to robot2)
 // k-swap -- exponential complexity
 
-int main(int argc, char * argv[]) {
-
-    // Start by defining a cost matrix for several robots
-    int num_tasks = 3;
-    // int matrix_size = (num_tasks+1) * (num_tasks+1);
-
+int main(int argc, char** argv) {
     /*
     cost matrix = [num_tasks+1 x num_tasks+1]
         R0      T1      T2      T3
@@ -25,35 +20,46 @@ int main(int argc, char * argv[]) {
     T3                          t3t3
     */
 
-    // float cost_r1[matrix_size] = {0, 1, 2.5, 1.5, 
-    //                               1, 0, 2, 2,
-    //                               2.5, 2, 0, 2,
-    //                               1.5, 2, 2, 0};
-    // float cost_r2[matrix_size] = {0, 3, 1.2, 3,
-    //                               3, 0, 2, 2,
-    //                               1.2, 2, 0, 2,
-    //                               3, 2, 2, 0};
+    /*
+    int num_tasks = 3;
+    int matrix_size = (num_tasks+1) * (num_tasks+1);
 
-    // std::vector<std::vector<float>> cost_r0 = {{0, 1, 2.5, 1.5},
-    //                                            {1, 0, 2, 2},
-    //                                            {2.5, 2, 0, 2},
-    //                                            {1.5, 2, 2, 0}};
-    // std::vector<std::vector<float>> cost_r1 = {{0, 3, 1.2, 3},
-    //                                            {3, 0, 2, 2},
-    //                                            {1.2, 2, 0, 2},
-    //                                            {3, 2, 2, 0}};
+    float cost_r1[matrix_size] = {0, 1, 2.5, 1.5, 
+                                  1, 0, 2, 2,
+                                  2.5, 2, 0, 2,
+                                  1.5, 2, 2, 0};
+    float cost_r2[matrix_size] = {0, 3, 1.2, 3,
+                                  3, 0, 2, 2,
+                                  1.2, 2, 0, 2,
+                                  3, 2, 2, 0};
 
-    // // Define a previous task assignment for each robot
-    // // Note: this is not an optimal assignment
-    // std::vector<int> path_r0 = {3,2};
-    // std::vector<int> path_r1 = {1};
+    std::vector<std::vector<float>> cost_r0 = {{0, 1, 2.5, 1.5},
+                                               {1, 0, 2, 2},
+                                               {2.5, 2, 0, 2},
+                                               {1.5, 2, 2, 0}};
+    std::vector<std::vector<float>> cost_r1 = {{0, 3, 1.2, 3},
+                                               {3, 0, 2, 2},
+                                               {1.2, 2, 0, 2},
+                                               {3, 2, 2, 0}};
+
+    // define a previous task assignment for each robot
+    // note: this is not an optimal assignment
+    std::vector<int> path_r0 = {3,2};
+    std::vector<int> path_r1 = {1};
+    */
+
+    /*
+    TODO: make robot and task position initialization input from txt file
+    Future work: use map generation (with walls) as environment and djikstra's algorithm to find cost matrix to each task
+    */
 
     // robot and task positions
     std::vector<Position> robots = {{1, 1}, {8, 8}};
     std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}};
 
-    // Define a previous task assignment for each robot
-    // Note: this is not an optimal assignment
+    int num_tasks = tasks.size();
+
+    // initial task assignment
     std::vector<int> path_r0 = {1,2};
     std::vector<int> path_r1 = {3};
 
@@ -86,7 +92,7 @@ int main(int argc, char * argv[]) {
     print_cost_matrix(cost_r0, robots[0]);
     print_cost_matrix(cost_r1, robots[1]);
 
-        // Calculate and print the initial path costs, makespan, and sum-of-costs
+    // calculate and print the initial path costs, makespan, and sum-of-costs
     float initial_path1_cost = calc_path_cost(num_tasks, path_r0, cost_r0);
     float initial_path2_cost = calc_path_cost(num_tasks, path_r1, cost_r1);
     float initial_makespan = calc_makespan(initial_path1_cost, initial_path2_cost);
@@ -101,10 +107,16 @@ int main(int argc, char * argv[]) {
     // depth search value
     int k = 1;
 
-    // Use a one_swap function to see if a swap is desirable
+    // use the one_swap() function recursively to see if a swap is desirable
     SwapResult arr = k_swap(num_tasks, path_r0, path_r1, cost_r0, cost_r1, k);
 
-    // Calculate and print the final path costs, makespan, and sum-of-costs after the swap
+    /*
+    TODO: fix arr output so that it stores best task to swap for every recursive step
+    TODO: implement add_task() online using argc and argv
+    TODO: implement heuristic() and measure optimality
+    */
+
+    // calculate and print the final path costs, makespan, and sum-of-costs after the swap
     float final_path1_cost = calc_path_cost(num_tasks, path_r0, cost_r0);
     float final_path2_cost = calc_path_cost(num_tasks, path_r1, cost_r1);
     float final_makespan = calc_makespan(final_path1_cost, final_path2_cost);
@@ -116,7 +128,7 @@ int main(int argc, char * argv[]) {
     std::cout << "Final sum-of-costs: " << final_sum_of_costs << std::endl;
     std::cout << std::endl;
 
-    // Print task assignments
+    // print task assignments
     std::cout << "Printing robot 0 assignment\n";
     for (int i=0; i<path_r0.size(); i++) {
         std::cout << path_r0[i] << std::endl;
@@ -128,7 +140,7 @@ int main(int argc, char * argv[]) {
 
     std::cout << std::endl;
 
-    // Print the change in makespan and sum-of-costs
+    // print the change in makespan and sum-of-costs
     std::cout << "Best task to swap: " << arr.task_to_swap << std::endl;
     std::cout << "Change in makespan: " << arr.makespan_diff << std::endl;
     std::cout << "Change in sum-of-costs: " << arr.sum_of_costs_diff << std::endl;

@@ -31,7 +31,7 @@ SwapResult evaluate_task_swap(int num_tasks, const std::vector<int>& path_from, 
 
 // function to perform a one swap if it's optimal. returns an array for the swapped task number, makespan diff, and sum_of_costs diff
 // _ -> 1 -> _ -> 2 -> _
-// Function to find the best task swap between two paths
+// function to find the best task swap between two paths
 SwapResult one_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const std::vector<std::vector<float>>& cost1, const std::vector<std::vector<float>>& cost2) {
     float initial_makespan = calc_makespan(calc_path_cost(num_tasks, path1, cost1), calc_path_cost(num_tasks, path2, cost2));
     float initial_sum_of_costs = calc_sum_of_costs(calc_path_cost(num_tasks, path1, cost1), calc_path_cost(num_tasks, path2, cost2));
@@ -42,59 +42,59 @@ SwapResult one_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& pa
     int best_swap_path = -1;
     int best_insert_position = -1;
 
-    // Evaluate potential swaps from path1 to path2
+    // evaluate potential swaps from path1 to path2
     for (int i = 0; i < path1.size(); ++i) {
         int task_to_swap = path1[i];
-        // Evaluate potential swap
+        // evaluate potential swap
         SwapResult potential_swap = evaluate_task_swap(num_tasks, path1, path2, cost1, cost2, task_to_swap, initial_makespan, initial_sum_of_costs, best_makespan_diff, best_sum_of_costs_diff, best_insert_position, 1);
-        // Update best swap if the potential swap is better
+        // update best swap if the potential swap is better
         if (potential_swap.task_to_swap != -1) {
             best_task_to_swap = task_to_swap;
             best_swap_path = 1;
         }
     }
 
-    // Evaluate potential swaps from path2 to path1
+    // evaluate potential swaps from path2 to path1
     for (int i = 0; i < path2.size(); ++i) {
         int task_to_swap = path2[i];
-        // Evaluate potential swap
+        // evaluate potential swap
         SwapResult potential_swap = evaluate_task_swap(num_tasks, path2, path1, cost2, cost1, task_to_swap, initial_makespan, initial_sum_of_costs, best_makespan_diff, best_sum_of_costs_diff, best_insert_position, 2);
-        // Update best swap if the potential swap is better
+        // update best swap if the potential swap is better
         if (potential_swap.task_to_swap != -1) {
             best_task_to_swap = task_to_swap;
             best_swap_path = 2;
         }
     }
 
-    // Perform the best swap if found
+    // perform the best swap if found
     if (best_task_to_swap != -1) {
         if (best_swap_path == 1) {
-            // Remove the task from path1 and add it to path2 at the best position
+            // remove the task from path1 and add it to path2 at the best position
             path1.erase(std::remove(path1.begin(), path1.end(), best_task_to_swap));
             path2.insert(path2.begin() + best_insert_position, best_task_to_swap);
         }
         else {
-            // Remove the task from path2 and add it to path1 at the best position
+            // remove the task from path2 and add it to path1 at the best position
             path2.erase(std::remove(path2.begin(), path2.end(), best_task_to_swap));
             path1.insert(path1.begin() + best_insert_position, best_task_to_swap);
         }
     }
 
-    // Return the best swap result
+    // return the best swap result
     return SwapResult{best_task_to_swap, best_makespan_diff, best_sum_of_costs_diff};
 }
 
 /*
-For task 1 moving to r1:
+for task 1 moving to r1:
     r1: {1, 3, 2}, r2: {}
     r1: {3, 1, 2}, r2: {}
     r1: {3, 2, 1}, r2: {}
 
-For task 2 moving to r2:
+for task 2 moving to r2:
     r1: {3}, r2: {2, 1}
     r1: {3}, r2: {1, 2}
 
-For task 3 moving to r2:
+for task 3 moving to r2:
     r1: {2}, r2: {3, 1}
     r1: {2}, r2: {1, 3}
 */
