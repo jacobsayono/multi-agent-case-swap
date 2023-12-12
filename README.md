@@ -9,18 +9,6 @@
 
 - `heuristic()` uses euclidean properties to find potential tasks that can be swapped. (TODO)
 
-##### Bug fixes & further implementation:
-- TODO: fix arr output so that it stores best task to swap for every recursive step
-
-- TODO: implement add_task() online using argc and argv
-
-- TODO: implement heuristic() and measure optimality
-
-##### Secondary features:
-- TODO: make robot and task position initialization input from txt file.
-
-- TODO: use map generation (with walls) as environment and djikstra's algorithm to find cost matrix to each task.
-
 ## Example using 3 robots (X), 2 tasks (O) with cost from each robot to each task.
 
 ![Desc](assets/1-swap.jpg)
@@ -45,3 +33,14 @@ Another example (top left robot 0, bottom right robot 1; numbered the task for b
 
 ![Grid2](assets/grid2.png)
 
+##### Bug fixes & further implementation:
+- TODO: fix arr output so that it stores best task to swap for every recursive step
+
+- TODO: implement add_task() online using argc and argv
+
+- TODO: implement heuristic() and measure optimality
+
+##### Secondary features:
+- TODO: make robot and task position initialization input from txt file.
+
+- TODO: use map generation (with walls) as environment and djikstra's algorithm to find cost matrix to each task.
