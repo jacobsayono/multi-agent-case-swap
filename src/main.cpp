@@ -55,21 +55,21 @@ int main(int argc, char** argv) {
 
     // robot and task positions
     std::vector<Position> robots = {{1, 1}, {8, 8}};
-    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}};
+    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
 
     int num_tasks = tasks.size();
 
     // initial task assignment
-    std::vector<int> path_r0 = {1,2};
-    std::vector<int> path_r1 = {3};
+    std::vector<int> path_r0 = {1, 2};
+    std::vector<int> path_r1 = {3, 4};
 
-    std::cout << "Initial task assignments for robot 0: ";
+    std::cout << "Initial task assignments for robot A at " << "(" << robots[0].x << "," << robots[0].y << "): ";
     for (int i = 0; i < path_r0.size(); ++i) {
         std::cout << path_r0[i] << " ";
     }
     std::cout << std::endl;
 
-    std::cout << "Initial task assignments for robot 1: ";
+    std::cout << "Initial task assignments for robot B at " << "(" << robots[1].x << "," << robots[1].y << "): ";
     for (int i = 0; i < path_r1.size(); ++i) {
         std::cout << path_r1[i] << " ";
     }
@@ -89,7 +89,10 @@ int main(int argc, char** argv) {
     std::vector<std::vector<float>> cost_r0 = generate_cost_matrix(robots[0], tasks);
     std::vector<std::vector<float>> cost_r1 = generate_cost_matrix(robots[1], tasks);
 
+
+    std::cout << "Cost matrix for robot A:" << std::endl;
     print_cost_matrix(cost_r0, robots[0]);
+    std::cout << "Cost matrix for robot B:" << std::endl;
     print_cost_matrix(cost_r1, robots[1]);
 
     // calculate and print the initial path costs, makespan, and sum-of-costs
@@ -98,16 +101,16 @@ int main(int argc, char** argv) {
     float initial_makespan = calc_makespan(initial_path1_cost, initial_path2_cost);
     float initial_sum_of_costs = calc_sum_of_costs(initial_path1_cost, initial_path2_cost);
 
-    std::cout << "Initial r0 path cost: " << initial_path1_cost << std::endl;
-    std::cout << "Initial r1 path cost: " << initial_path2_cost << std::endl;
-    std::cout << "Initial makespan: " << initial_makespan << std::endl;
-    std::cout << "Initial sum-of-costs: " << initial_sum_of_costs << std::endl;
+    std::cout << "Current robot A " << "(" << robots[0].x << "," << robots[0].y << ") path cost: " << initial_path1_cost << std::endl;
+    std::cout << "Current robot B " << "(" << robots[1].x << "," << robots[1].y << ") path cost: " << initial_path2_cost << std::endl;
+    std::cout << "Current makespan: " << initial_makespan << std::endl;
+    std::cout << "Current sum-of-costs: " << initial_sum_of_costs << std::endl;
 
     // depth search value
-    int k = 2;
+    int k = 4;
 
     // use the one_swap() function recursively to see if a swap is desirable
-    SwapResult arr = k_swap(num_tasks, path_r0, path_r1, cost_r0, cost_r1, k);
+    SwapResult arr = k_swap(num_tasks, path_r0, path_r1, cost_r0, cost_r1, k, initial_makespan, initial_sum_of_costs);
 
     /*
     TODO: fix arr output so that it stores best task to swap for every recursive step

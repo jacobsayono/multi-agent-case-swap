@@ -17,21 +17,9 @@ Results for best 1-swap:
 
 ![Result](assets/results.png)
 
-## Example using grid implementation with (x, y) coordinates.
+## Example using recursive k-swap with grid implementation with (x, y) coordinates.
 
-Robots (X) and tasks (O) are initialized.
-Let the tasks beneath each robot be assigned to that robot.
-
-Now, let the last test be assigned to the robot on the left (far away from it).
-Clearly, an optimal swap would be to give this task to the robot on the right.
-
-Results verify our hypothesis:
-
-![Grid](assets/grid.png)
-
-Another example (top left robot 0, bottom right robot 1; numbered the task for better visualization):
-
-![Grid2](assets/grid2.png)
+![Example](assets/milestone.png)
 
 ##### Bug fixes & further implementation:
 - TODO: fix arr output so that it stores best task to swap for every recursive step

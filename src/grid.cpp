@@ -14,7 +14,7 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     for (int i = 0; i < robots.size(); ++i) {
         if (robots[i].x >= 0 && robots[i].x < grid_width && robots[i].y >= 0 && robots[i].y < grid_height) {
             // grid[robots[i].y][robots[i].x] = 'X';
-            grid[robots[i].y][robots[i].x] = '0' + i;
+            grid[robots[i].y][robots[i].x] = 'A' + i;
         }
     }
 
@@ -22,7 +22,7 @@ void print_grid(const std::vector<Position>& robots, const std::vector<Position>
     for (int i = 0; i < tasks.size(); ++i) {
         if (tasks[i].x >= 0 && tasks[i].x < grid_width && tasks[i].y >= 0 && tasks[i].y < grid_height) {
             // grid[tasks[i].y][tasks[i].x] = 'O';
-            grid[tasks[i].y][tasks[i].x] = 'A' + i;
+            grid[tasks[i].y][tasks[i].x] = '1' + i;
         }
     }
 
@@ -53,7 +53,6 @@ std::vector<std::vector<float>> generate_cost_matrix(const Position& robot, cons
 
 // print out the stored 2D vector to check calculations
 void print_cost_matrix(const std::vector<std::vector<float>>& cost_matrix, const Position& robot) {
-    std::cout << "Cost Matrix for Robot at (" << robot.x << ", " << robot.y << "):" << std::endl;
     for (int row = 0; row < cost_matrix.size(); ++row) {
         for (int col = 0; col < cost_matrix[row].size(); ++col) {
             std::cout << cost_matrix[row][col] << "\t";
