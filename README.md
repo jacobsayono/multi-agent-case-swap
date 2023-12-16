@@ -22,7 +22,7 @@ Results for best 1-swap:
 ![Example](assets/milestone.png)
 
 ##### Bug fixes & further implementation:
-~~- TODO: fix arr output so that it stores best task to swap for every recursive step~~
+- ~~TODO: fix arr output so that it stores best task to swap for every recursive step~~
 
 - TODO: recurse the recursion checks for n robots
 
