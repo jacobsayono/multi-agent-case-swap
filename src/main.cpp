@@ -56,12 +56,25 @@ int main(int argc, char** argv) {
     // robot and task positions
     std::vector<Position> robots = {{1, 1}, {8, 8}};
     std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
+    // std::vector<Position> robots = {{rand() % 30 + 1, rand() % 30 + 1}, 
+    //                                 {rand() % 30 + 2, rand() % 30 + 2}};
+
+    // std::vector<Position> tasks = {{rand() % 30 + 1, rand() % 30 + 1}, 
+    //                             {rand() % 30 + 2, rand() % 30 + 2}, 
+    //                             {rand() % 30 + 3, rand() % 30 + 3}, 
+    //                             {rand() % 30 + 4, rand() % 30 + 4},
+    //                             {rand() % 30 + 5, rand() % 30 + 5},
+    //                             {rand() % 30 + 6, rand() % 30 + 6},
+    //                             {rand() % 30 + 7, rand() % 30 + 7},
+    //                             {rand() % 30 + 8, rand() % 30 + 8}};
 
     int num_tasks = tasks.size();
 
     // initial task assignment
     std::vector<int> path_r0 = {1, 2};
     std::vector<int> path_r1 = {3, 4};
+    // std::vector<int> path_r0 = {1, 2, 5, 6};
+    // std::vector<int> path_r1 = {3, 4, 7, 8};
 
     std::cout << "Initial task assignments for robot A at " << "(" << robots[0].x << "," << robots[0].y << "): ";
     for (int i = 0; i < path_r0.size(); ++i) {
@@ -78,6 +91,8 @@ int main(int argc, char** argv) {
     // grid size
     const int grid_width = 10;
     const int grid_height = 10;
+    // const int grid_width = 30;
+    // const int grid_height = 30;
 
     // print the grid
     std::cout << "Grid Visualization:" << std::endl;
@@ -107,7 +122,7 @@ int main(int argc, char** argv) {
     std::cout << "Current sum-of-costs: " << initial_sum_of_costs << std::endl;
 
     // depth search value
-    int k = 4;
+    int k = 20;
 
     // use the one_swap() function recursively to see if a swap is desirable
     SwapResult arr = k_swap(num_tasks, path_r0, path_r1, cost_r0, cost_r1, k, initial_makespan, initial_sum_of_costs);

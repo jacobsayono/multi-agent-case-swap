@@ -139,7 +139,7 @@ for task 3 moving to r2:
 SwapResult k_swap(int num_tasks, std::vector<int>& path1, std::vector<int>& path2, const std::vector<std::vector<float>>& cost1, const std::vector<std::vector<float>>& cost2, int k, const float initial_makespan, const float initial_sum_of_costs) {
     if (k <= 0) {
         std::cout << std::endl;
-        std::cout << "ERROR: Please set depth value k > 0" << std::endl;
+        std::cout << "There may be more optimal solutions. Please set k to a higher value if needed!" << std::endl;
         return SwapResult{-1, 0.0f, 0.0f, -1}; // no swap needed or possible
     }
 
