@@ -102,10 +102,9 @@ int main(int argc, char** argv) {
     std::cout << "Initial r1 path cost: " << initial_path2_cost << std::endl;
     std::cout << "Initial makespan: " << initial_makespan << std::endl;
     std::cout << "Initial sum-of-costs: " << initial_sum_of_costs << std::endl;
-    std::cout << std::endl;
 
     // depth search value
-    int k = 1;
+    int k = 2;
 
     // use the one_swap() function recursively to see if a swap is desirable
     SwapResult arr = k_swap(num_tasks, path_r0, path_r1, cost_r0, cost_r1, k);
@@ -115,36 +114,6 @@ int main(int argc, char** argv) {
     TODO: implement add_task() online using argc and argv
     TODO: implement heuristic() and measure optimality
     */
-
-    // calculate and print the final path costs, makespan, and sum-of-costs after the swap
-    float final_path1_cost = calc_path_cost(num_tasks, path_r0, cost_r0);
-    float final_path2_cost = calc_path_cost(num_tasks, path_r1, cost_r1);
-    float final_makespan = calc_makespan(final_path1_cost, final_path2_cost);
-    float final_sum_of_costs = calc_sum_of_costs(final_path1_cost, final_path2_cost);
-
-    std::cout << "Final r0 path cost: " << final_path1_cost << std::endl;
-    std::cout << "Final r1 path cost: " << final_path2_cost << std::endl;
-    std::cout << "Final makespan: " << final_makespan << std::endl;
-    std::cout << "Final sum-of-costs: " << final_sum_of_costs << std::endl;
-    std::cout << std::endl;
-
-    // print task assignments
-    std::cout << "Printing robot 0 assignment\n";
-    for (int i=0; i<path_r0.size(); i++) {
-        std::cout << path_r0[i] << std::endl;
-    }
-    std::cout << "Printing robot 1 assignment\n";
-    for (int i=0; i<path_r1.size(); i++) {
-        std::cout << path_r1[i] << std::endl;
-    }
-
-    std::cout << std::endl;
-
-    // print the change in makespan and sum-of-costs
-    std::cout << "Best task to swap: " << arr.task_to_swap << std::endl;
-    std::cout << "Change in makespan: " << arr.makespan_diff << std::endl;
-    std::cout << "Change in sum-of-costs: " << arr.sum_of_costs_diff << std::endl;
-    std::cout << std::endl;
 
     return 0;
 }
