@@ -53,82 +53,67 @@ int main(int argc, char** argv) {
     Future work: use map generation (with walls) as environment and djikstra's algorithm to find cost matrix to each task
     */
 
+    // depth search value
+    int k = 20;
+
+    // TODO: scale for m robots
     // robot and task positions
     std::vector<Position> robots = {{1, 1}, {8, 8}};
     std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
-    // std::vector<Position> robots = {{rand() % 30 + 1, rand() % 30 + 1}, 
-    //                                 {rand() % 30 + 2, rand() % 30 + 2}};
 
-    // std::vector<Position> tasks = {{rand() % 30 + 1, rand() % 30 + 1}, 
-    //                             {rand() % 30 + 2, rand() % 30 + 2}, 
-    //                             {rand() % 30 + 3, rand() % 30 + 3}, 
-    //                             {rand() % 30 + 4, rand() % 30 + 4},
-    //                             {rand() % 30 + 5, rand() % 30 + 5},
-    //                             {rand() % 30 + 6, rand() % 30 + 6},
-    //                             {rand() % 30 + 7, rand() % 30 + 7},
-    //                             {rand() % 30 + 8, rand() % 30 + 8}};
-
+    int num_robots = robots.size();
     int num_tasks = tasks.size();
-
-    // initial task assignment
-    std::vector<int> path_r0 = {1, 2};
-    std::vector<int> path_r1 = {3, 4};
-    // std::vector<int> path_r0 = {1, 2, 5, 6};
-    // std::vector<int> path_r1 = {3, 4, 7, 8};
-
-    std::cout << "Initial task assignments for robot A at " << "(" << robots[0].x << "," << robots[0].y << "): ";
-    for (int i = 0; i < path_r0.size(); ++i) {
-        std::cout << path_r0[i] << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Initial task assignments for robot B at " << "(" << robots[1].x << "," << robots[1].y << "): ";
-    for (int i = 0; i < path_r1.size(); ++i) {
-        std::cout << path_r1[i] << " ";
-    }
-    std::cout << std::endl << std:: endl;
 
     // grid size
     const int grid_width = 10;
     const int grid_height = 10;
-    // const int grid_width = 30;
-    // const int grid_height = 30;
 
     // print the grid
     std::cout << "Grid Visualization:" << std::endl;
     print_grid(robots, tasks, grid_width, grid_height);
     std::cout << std::endl;
 
-    const int grid_size = tasks.size() + 1;
+    // TODO: set this using dijkstra's algorithm
+    // initial task assignment
+    std::vector<std::vector<int>> path = {{1, 2}, {3, 4}};
 
-    std::vector<std::vector<float>> cost_r0 = generate_cost_matrix(robots[0], tasks);
-    std::vector<std::vector<float>> cost_r1 = generate_cost_matrix(robots[1], tasks);
+    // hold cost matrix for each robot
+    std::vector<std::vector<std::vector<float>>> cost_matrices(num_robots);
 
+    // hold initial path cost for each robot
+    std::vector<float> initial_path_cost(num_robots);
 
-    std::cout << "Cost matrix for robot A:" << std::endl;
-    print_cost_matrix(cost_r0, robots[0]);
-    std::cout << "Cost matrix for robot B:" << std::endl;
-    print_cost_matrix(cost_r1, robots[1]);
+    for (int r = 0; r < num_robots; ++r) {
+        std::cout << "Initial task assignments for robot " << static_cast<char>('A' + r) << " at " << "(" << robots[r].x << "," << robots[r].y << "): ";
+        for (int i = 0; i < path[r].size(); ++i) {
+            std::cout << path[r][i] << " ";
+        }
+        std::cout << std::endl;
 
-    // calculate and print the initial path costs, makespan, and sum-of-costs
-    float initial_path1_cost = calc_path_cost(num_tasks, path_r0, cost_r0);
-    float initial_path2_cost = calc_path_cost(num_tasks, path_r1, cost_r1);
-    float initial_makespan = calc_makespan(initial_path1_cost, initial_path2_cost);
-    float initial_sum_of_costs = calc_sum_of_costs(initial_path1_cost, initial_path2_cost);
+        cost_matrices[r] = generate_cost_matrix(robots[r], tasks);
 
-    std::cout << "Current robot A " << "(" << robots[0].x << "," << robots[0].y << ") path cost: " << initial_path1_cost << std::endl;
-    std::cout << "Current robot B " << "(" << robots[1].x << "," << robots[1].y << ") path cost: " << initial_path2_cost << std::endl;
-    std::cout << "Current makespan: " << initial_makespan << std::endl;
-    std::cout << "Current sum-of-costs: " << initial_sum_of_costs << std::endl;
+        std::cout << "Cost matrix for robot " << static_cast<char>('A' + r) << ": " << std::endl;
+        print_cost_matrix(cost_matrices[r], robots[r]);
 
-    // depth search value
-    int k = 20;
+        initial_path_cost[r] = calc_path_cost(num_tasks, path[r], cost_matrices[r]);
+    }
 
-    // use the one_swap() function recursively to see if a swap is desirable
-    SwapResult arr = k_swap(num_tasks, path_r0, path_r1, cost_r0, cost_r1, k, initial_makespan, initial_sum_of_costs);
+    float initial_makespan = 0;
+    float initial_sum_of_costs = 0;
+
+    for (int r = 0; r < num_robots - 1; ++r) {
+        initial_makespan += calc_makespan(initial_path_cost[r], initial_path_cost[r+1]);
+        initial_sum_of_costs += calc_sum_of_costs(initial_path_cost[r], initial_path_cost[r+1]);
+
+        std::cout << "Current robot " << static_cast<char>('A' + r) << "(" << robots[r].x << "," << robots[r].y << ") path cost: " << initial_path_cost[r] << std::endl;
+        std::cout << "Current robot " << static_cast<char>('A' + r + 1) << "(" << robots[r+1].x << "," << robots[r+1].y << ") path cost: " << initial_path_cost[r+1] << std::endl;
+        std::cout << "Current makespan: " << initial_makespan << std::endl;
+        std::cout << "Current sum-of-costs: " << initial_sum_of_costs << std::endl;
+        // use the one_swap() function recursively to see if a swap is desirable
+        SwapResult arr = k_swap(num_tasks, path[r], path[r+1], cost_matrices[r], cost_matrices[r+1], k, initial_makespan, initial_sum_of_costs);
+    }
 
     /*
-    TODO: fix arr output so that it stores best task to swap for every recursive step
     TODO: implement add_task() online using argc and argv
     TODO: implement heuristic() and measure optimality
     */
