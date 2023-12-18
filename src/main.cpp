@@ -54,19 +54,19 @@ int main(int argc, char** argv) {
     */
 
     // depth search value
-    int k = 1;
+    int k = 5;
 
-    // // TODO: scale for m robots
-    // // robot and task positions
-    // std::vector<Position> robots = {{1, 1}, {8, 8}};
-    // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
-    // // TODO: set this using dijkstra's algorithm
-    // // initial task assignment
-    // std::vector<std::vector<int>> path = {{1, 2}, {3, 4}};
+    // TODO: scale for m robots
+    // robot and task positions
+    std::vector<Position> robots = {{1, 1}, {8, 8}};
+    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
+    // TODO: set this using dijkstra's algorithm
+    // initial task assignment
+    std::vector<std::vector<int>> path = {{1, 2}, {3, 4}};
 
-    std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
-    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
-    std::vector<std::vector<int>> path = {{1, 2}, {3, 4}, {5, 6}};
+    // std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
+    // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
+    // std::vector<std::vector<int>> path = {{1, 2}, {3, 4}, {5, 6}};
 
     int num_robots = robots.size();
     int num_tasks = tasks.size();
