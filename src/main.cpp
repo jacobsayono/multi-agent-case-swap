@@ -59,10 +59,21 @@ int main(int argc, char** argv) {
     // TODO: scale for m robots
     // robot and task positions
     std::vector<Position> robots = {{1, 1}, {8, 8}};
-    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
+    // std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
+    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}};
+    // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
+
+    // TODO: set this using dijkstra's algorithm
+    // initial task assignment
+    std::vector<std::vector<int>> path = {{3, 1, 2}, {4}};
+    // std::vector<std::vector<int>> path = {{1, 2}, {3, 4}, {5, 6}};
 
     int num_robots = robots.size();
     int num_tasks = tasks.size();
+
+    std::cout << "Number of robots: " << num_robots << std::endl;
+    std::cout << "Number of tasks: " << num_tasks << std::endl;
+    std::cout << std::endl;
 
     // grid size
     const int grid_width = 10;
@@ -73,10 +84,6 @@ int main(int argc, char** argv) {
     print_grid(robots, tasks, grid_width, grid_height);
     std::cout << std::endl;
 
-    // TODO: set this using dijkstra's algorithm
-    // initial task assignment
-    std::vector<std::vector<int>> path = {{1, 2}, {3, 4}};
-
     // hold cost matrix for each robot
     std::vector<std::vector<std::vector<float>>> cost_matrices(num_robots);
 
@@ -84,19 +91,47 @@ int main(int argc, char** argv) {
     std::vector<float> initial_path_cost(num_robots);
 
     for (int r = 0; r < num_robots; ++r) {
+        cost_matrices[r] = generate_cost_matrix(robots[r], tasks);
+        std::cout << "Cost matrix for robot " << static_cast<char>('A' + r) << ": " << std::endl;
+        print_cost_matrix(cost_matrices[r], robots[r]);
+    }
+
+    std::cout << std::endl;
+
+    for (int r = 0; r < num_robots; ++r) {
         std::cout << "Initial task assignments for robot " << static_cast<char>('A' + r) << " at " << "(" << robots[r].x << "," << robots[r].y << "): ";
         for (int i = 0; i < path[r].size(); ++i) {
             std::cout << path[r][i] << " ";
         }
         std::cout << std::endl;
-
-        cost_matrices[r] = generate_cost_matrix(robots[r], tasks);
-
-        std::cout << "Cost matrix for robot " << static_cast<char>('A' + r) << ": " << std::endl;
-        print_cost_matrix(cost_matrices[r], robots[r]);
-
-        initial_path_cost[r] = calc_path_cost(num_tasks, path[r], cost_matrices[r]);
     }
+
+    std::cout << std::endl;
+
+    for (int r = 0; r < num_robots; ++r) {
+        initial_path_cost[r] = calc_path_cost(num_tasks, path[r], cost_matrices[r]);
+        std::cout << "Current robot " << static_cast<char>('A' + r) << " path cost: " << initial_path_cost[r] << std::endl;
+    }
+
+    // // Calculate overall makespan and sum of costs after all robots are processed
+    // float overall_makespan = 0;
+    // float overall_sum_of_costs = 0;
+    // for (int r = 0; r < num_robots; ++r) {
+    //     overall_makespan = std::max(overall_makespan, initial_path_cost[r]);
+    //     overall_sum_of_costs += initial_path_cost[r];
+    // }
+
+    // std::cout << "Overall makespan: " << overall_makespan << std::endl;
+    // std::cout << "Overall sum-of-costs: " << overall_sum_of_costs << std::endl;
+
+    // // Swap operations for all robot pairs
+    // // iterate over (num_robots choose 2) times
+    // for (int r = 0; r < num_robots - 1; ++r) {
+    //     for (int s = r + 1; s < num_robots; ++s) {
+    //         SwapResult arr = k_swap(num_tasks, path[r], path[s], cost_matrices[r], cost_matrices[s], k, overall_makespan, overall_sum_of_costs);
+    //         // Handle the swap result as needed
+    //     }
+    // }
 
     float initial_makespan = 0;
     float initial_sum_of_costs = 0;

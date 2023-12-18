@@ -59,5 +59,4 @@ void print_cost_matrix(const std::vector<std::vector<float>>& cost_matrix, const
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl;
 }

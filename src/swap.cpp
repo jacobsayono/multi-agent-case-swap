@@ -15,7 +15,7 @@ SwapResult evaluate_task_swap(int num_tasks, const std::vector<int>& path_from, 
         float makespan_diff = new_makespan - initial_makespan;
         float sum_of_costs_diff = new_sum_of_costs - initial_sum_of_costs;
 
-        if (makespan_diff <= 0 && sum_of_costs_diff <= 0) {
+        if (makespan_diff <= 0 && makespan_diff < best_makespan_diff || (makespan_diff == 0 && (sum_of_costs_diff <= 0 && sum_of_costs_diff < best_sum_of_costs_diff))) {
             best_makespan_diff = makespan_diff;
             best_sum_of_costs_diff = sum_of_costs_diff;
             best_insert_position = insert_pos;
