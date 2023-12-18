@@ -54,19 +54,19 @@ int main(int argc, char** argv) {
     */
 
     // depth search value
-    int k = 20;
+    int k = 1;
 
-    // TODO: scale for m robots
-    // robot and task positions
-    std::vector<Position> robots = {{1, 1}, {8, 8}};
-    // std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
-    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}};
-    // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
+    // // TODO: scale for m robots
+    // // robot and task positions
+    // std::vector<Position> robots = {{1, 1}, {8, 8}};
+    // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
+    // // TODO: set this using dijkstra's algorithm
+    // // initial task assignment
+    // std::vector<std::vector<int>> path = {{1, 2}, {3, 4}};
 
-    // TODO: set this using dijkstra's algorithm
-    // initial task assignment
-    std::vector<std::vector<int>> path = {{3, 1, 2}, {4}};
-    // std::vector<std::vector<int>> path = {{1, 2}, {3, 4}, {5, 6}};
+    std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
+    std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
+    std::vector<std::vector<int>> path = {{1, 2}, {3, 4}, {5, 6}};
 
     int num_robots = robots.size();
     int num_tasks = tasks.size();
@@ -106,47 +106,24 @@ int main(int argc, char** argv) {
         std::cout << std::endl;
     }
 
-    std::cout << std::endl;
-
     for (int r = 0; r < num_robots; ++r) {
         initial_path_cost[r] = calc_path_cost(num_tasks, path[r], cost_matrices[r]);
         std::cout << "Current robot " << static_cast<char>('A' + r) << " path cost: " << initial_path_cost[r] << std::endl;
     }
 
-    // // Calculate overall makespan and sum of costs after all robots are processed
-    // float overall_makespan = 0;
-    // float overall_sum_of_costs = 0;
-    // for (int r = 0; r < num_robots; ++r) {
-    //     overall_makespan = std::max(overall_makespan, initial_path_cost[r]);
-    //     overall_sum_of_costs += initial_path_cost[r];
-    // }
-
-    // std::cout << "Overall makespan: " << overall_makespan << std::endl;
-    // std::cout << "Overall sum-of-costs: " << overall_sum_of_costs << std::endl;
-
-    // // Swap operations for all robot pairs
-    // // iterate over (num_robots choose 2) times
-    // for (int r = 0; r < num_robots - 1; ++r) {
-    //     for (int s = r + 1; s < num_robots; ++s) {
-    //         SwapResult arr = k_swap(num_tasks, path[r], path[s], cost_matrices[r], cost_matrices[s], k, overall_makespan, overall_sum_of_costs);
-    //         // Handle the swap result as needed
-    //     }
-    // }
-
-    float initial_makespan = 0;
-    float initial_sum_of_costs = 0;
-
-    for (int r = 0; r < num_robots - 1; ++r) {
-        initial_makespan += calc_makespan(initial_path_cost[r], initial_path_cost[r+1]);
-        initial_sum_of_costs += calc_sum_of_costs(initial_path_cost[r], initial_path_cost[r+1]);
-
-        std::cout << "Current robot " << static_cast<char>('A' + r) << "(" << robots[r].x << "," << robots[r].y << ") path cost: " << initial_path_cost[r] << std::endl;
-        std::cout << "Current robot " << static_cast<char>('A' + r + 1) << "(" << robots[r+1].x << "," << robots[r+1].y << ") path cost: " << initial_path_cost[r+1] << std::endl;
-        std::cout << "Current makespan: " << initial_makespan << std::endl;
-        std::cout << "Current sum-of-costs: " << initial_sum_of_costs << std::endl;
-        // use the one_swap() function recursively to see if a swap is desirable
-        SwapResult arr = k_swap(num_tasks, path[r], path[r+1], cost_matrices[r], cost_matrices[r+1], k, initial_makespan, initial_sum_of_costs);
+    // // Calculate current makespan and sum of costs after all robots are processed
+    float current_makespan = 0;
+    float current_sum_of_costs = 0;
+    for (int r = 0; r < num_robots; ++r) {
+        current_makespan = std::max(current_makespan, initial_path_cost[r]);
+        current_sum_of_costs += initial_path_cost[r];
     }
+
+    std::cout << "Current makespan: " << current_makespan << std::endl;
+    std::cout << "Current sum-of-costs: " << current_sum_of_costs << std::endl;
+
+    // use the one_swap() function recursively to see if a swap is desirable
+    SwapResult arr = k_swap(num_robots, num_tasks, path, cost_matrices, k, current_makespan, current_sum_of_costs);
 
     /*
     TODO: implement add_task() online using argc and argv
