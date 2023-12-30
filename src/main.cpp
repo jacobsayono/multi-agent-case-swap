@@ -90,6 +90,7 @@ int main(int argc, char** argv) {
     // hold initial path cost for each robot
     std::vector<float> initial_path_cost(num_robots);
 
+    // print cost matrices
     for (int r = 0; r < num_robots; ++r) {
         cost_matrices[r] = generate_cost_matrix(robots[r], tasks);
         std::cout << "Cost matrix for robot " << static_cast<char>('A' + r) << ": " << std::endl;
@@ -98,6 +99,7 @@ int main(int argc, char** argv) {
 
     std::cout << std::endl;
 
+    // print initial task assignments
     for (int r = 0; r < num_robots; ++r) {
         std::cout << "Initial task assignments for robot " << static_cast<char>('A' + r) << " at " << "(" << robots[r].x << "," << robots[r].y << "): ";
         for (int i = 0; i < path[r].size(); ++i) {
@@ -106,12 +108,13 @@ int main(int argc, char** argv) {
         std::cout << std::endl;
     }
 
+    // print each robot path cost
     for (int r = 0; r < num_robots; ++r) {
         initial_path_cost[r] = calc_path_cost(num_tasks, path[r], cost_matrices[r]);
         std::cout << "Current robot " << static_cast<char>('A' + r) << " path cost: " << initial_path_cost[r] << std::endl;
     }
 
-    // // Calculate current makespan and sum of costs after all robots are processed
+    // calculate current makespan and sum of costs after all robots are processed
     float current_makespan = 0;
     float current_sum_of_costs = 0;
     for (int r = 0; r < num_robots; ++r) {

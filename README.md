@@ -8,7 +8,7 @@ Results for best 1-swap:
 
 ![Result](assets/results.png)
 
-## Example using recursive k-swap with grid implementation with (x, y) coordinates.
+## Example using recursive k-swap for grid implementation with (x, y) coordinates.
 
 ![Example](assets/milestone.png)
 
