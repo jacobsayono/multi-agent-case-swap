@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>  // <list> for paths would be better since we can insert/remove at O(1)
+#include <vector>  // <list> for assignments would be better since we can insert/remove at O(1)
 #include <algorithm>
 
 #include "../include/calc.h"
@@ -44,8 +44,8 @@ int main(int argc, char** argv) {
 
     // define a previous task assignment for each robot
     // note: this is not an optimal assignment
-    std::vector<int> path_r0 = {3,2};
-    std::vector<int> path_r1 = {1};
+    std::vector<int> assignment_r0 = {3,2};
+    std::vector<int> assignment_r1 = {1};
     */
 
     /*
@@ -62,11 +62,11 @@ int main(int argc, char** argv) {
     std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
     // TODO: set this using dijkstra's algorithm
     // initial task assignment
-    std::vector<std::vector<int>> path = {{1, 2}, {3, 4}};
+    std::vector<std::vector<int>> assignment = {{1, 2}, {3, 4}};
 
     // std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
     // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
-    // std::vector<std::vector<int>> path = {{1, 2}, {3, 4}, {5, 6}};
+    // std::vector<std::vector<int>> assignment = {{1, 2}, {3, 4}, {5, 6}};
 
     int num_robots = robots.size();
     int num_tasks = tasks.size();
@@ -87,8 +87,8 @@ int main(int argc, char** argv) {
     // hold cost matrix for each robot
     std::vector<std::vector<std::vector<float>>> cost_matrices(num_robots);
 
-    // hold initial path cost for each robot
-    std::vector<float> initial_path_cost(num_robots);
+    // hold initial assignment cost for each robot
+    std::vector<float> initial_assignment_cost(num_robots);
 
     // print cost matrices
     for (int r = 0; r < num_robots; ++r) {
@@ -102,31 +102,31 @@ int main(int argc, char** argv) {
     // print initial task assignments
     for (int r = 0; r < num_robots; ++r) {
         std::cout << "Initial task assignments for robot " << static_cast<char>('A' + r) << " at " << "(" << robots[r].x << "," << robots[r].y << "): ";
-        for (int i = 0; i < path[r].size(); ++i) {
-            std::cout << path[r][i] << " ";
+        for (int i = 0; i < assignment[r].size(); ++i) {
+            std::cout << assignment[r][i] << " ";
         }
         std::cout << std::endl;
     }
 
-    // print each robot path cost
+    // print each robot assignment cost
     for (int r = 0; r < num_robots; ++r) {
-        initial_path_cost[r] = calc_path_cost(num_tasks, path[r], cost_matrices[r]);
-        std::cout << "Current robot " << static_cast<char>('A' + r) << " path cost: " << initial_path_cost[r] << std::endl;
+        initial_assignment_cost[r] = calc_path_cost(num_tasks, assignment[r], cost_matrices[r]);
+        std::cout << "Current robot " << static_cast<char>('A' + r) << " assignment cost: " << initial_assignment_cost[r] << std::endl;
     }
 
     // calculate current makespan and sum of costs after all robots are processed
     float current_makespan = 0;
     float current_sum_of_costs = 0;
     for (int r = 0; r < num_robots; ++r) {
-        current_makespan = std::max(current_makespan, initial_path_cost[r]);
-        current_sum_of_costs += initial_path_cost[r];
+        current_makespan = std::max(current_makespan, initial_assignment_cost[r]);
+        current_sum_of_costs += initial_assignment_cost[r];
     }
 
     std::cout << "Current makespan: " << current_makespan << std::endl;
     std::cout << "Current sum-of-costs: " << current_sum_of_costs << std::endl;
 
     // use the one_swap() function recursively to see if a swap is desirable
-    SwapResult arr = k_swap(num_robots, num_tasks, path, cost_matrices, k, current_makespan, current_sum_of_costs);
+    SwapResult arr = k_swap(num_robots, num_tasks, assignment, cost_matrices, k, current_makespan, current_sum_of_costs);
 
     /*
     TODO: implement add_task() online using argc and argv
