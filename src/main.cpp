@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {6, 7}};
     // TODO: set this using dijkstra's algorithm
     // initial task assignment
-    std::vector<std::vector<int>> assignment = {{1, 2}, {3, 4}};
+    std::vector<std::vector<int>> assignment = {{1, 2}, {3, 4}};  // robotA: task1, task2; robotB: task3, task4;
 
     // std::vector<Position> robots = {{1, 1}, {8, 8}, {1, 8}};
     // std::vector<Position> tasks = {{7, 5}, {3, 4}, {5, 2}, {5, 7}, {2, 6}, {8, 3}};
