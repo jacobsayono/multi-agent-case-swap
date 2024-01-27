@@ -22,6 +22,10 @@ Results for best 1-swap:
 
 - `heuristic()` uses euclidean properties to find potential tasks that can be swapped. (TODO)
 
+## Tree class.
+
+The tree class builds a tree of nodes. Each node consists of a task assignment configuration, including its makespan and sum of costs. Additionally, the node dynamically allocates new memory to create a layer of children nodes, pointing to their respective addresses in memory. Each layer of the tree represents the depth in which we do k-swaps. The explored task assignment configuration is stored in a hash table to prevent duplicates and allowing the algorithm to terminate.
+
 ##### Bug fixes & further implementation:
 - ~~TODO: fix arr output so that it stores best task to swap for every recursive step~~
 
