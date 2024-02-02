@@ -1,11 +1,15 @@
 # Multi-Agent Case Swap
 
-## The goal is to create layers of all possible swaps and design a mathematical heuristic to approach a lower bound on makespan
+## Tree class.
 ![Tree](assets/tree.jpg)
 
 ![DFS](assets/DFS.jpg)
 
+![DFS-out](assets/DFS-out.jpg)
+
 ![BFS](assets/BFS.jpg)
+
+![BFS-out](assets/BFS-out.jpg)
 
 ## Example using 3 robots (X), 2 tasks (O) with cost from each robot to each task.
 
@@ -33,14 +37,16 @@ Results for best 1-swap:
 
 The tree class builds a tree of nodes. Each node consists of a task assignment configuration, including its makespan and sum of costs. Additionally, the node dynamically allocates new memory to create a layer of children nodes, pointing to their respective addresses in memory. Each layer of the tree represents the depth in which we do k-swaps. The explored task assignment configuration is stored in a hash table to prevent duplicates and allowing the algorithm to terminate.
 
+The goal is to form a DFS/BFS heuristic using a mathematical hypothesis that hints at us in approaching a lower bound on makespan. The first step is to use a brute-force approach to keep track of the minimum makespan as we traverse the tree.
+
 ##### Bug fixes & further implementation:
 - ~~TODO: fix arr output so that it stores best task to swap for every recursive step~~
 
-- TODO: recurse the recursion checks for n robots
+- ~~TODO: recurse the recursion checks for n robots~~
 
 - TODO: implement add_task() online using argc and argv
 
-- TODO: implement heuristic() and measure optimality
+- TODO: implement multiple heuristic() functions and measure their optimality
 
 ##### Secondary features:
 - TODO: make robot and task position initialization input from txt file.
