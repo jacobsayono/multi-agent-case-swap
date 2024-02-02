@@ -5,11 +5,11 @@
 
 ![DFS](assets/DFS.jpg)
 
-![DFS_out](assets/DFS-out.jpg)
+![DFSout](assets/DFSout.jpg)
 
 ![BFS](assets/BFS.jpg)
 
-![BFS_out](assets/BFS-out.jpg)
+![BFSout](assets/BFSout.jpg)
 
 ## Example using 3 robots (X), 2 tasks (O) with cost from each robot to each task.
 
