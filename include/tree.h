@@ -7,7 +7,12 @@
 
 class AssignmentTree {
 public:
-    AssignmentTree(const std::vector<std::vector<int>>& initialAssignment, int maxLevel);
+    enum BuildStrategy {  // if want to customize each version, implement inheritance
+        DFS,
+        BFS
+    };
+
+    AssignmentTree(const std::vector<std::vector<int>>& initialAssignment, int maxLevel, BuildStrategy strategy);
     ~AssignmentTree();
 
 private:
@@ -20,6 +25,8 @@ private:
 
         Node(const std::vector<std::vector<int>>& assignment);  // initializer list
     };
+
+    Node* root;
 
     // hash function for a vector of vectors (the assignment configuration)
     struct VecVecHash {
@@ -36,10 +43,8 @@ private:
         }
     };
 
-
-    Node* root;
-
-    void buildTree(Node* node, int currentLevel, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments);
+    void buildTreeDFS(Node* node, int currentLevel, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments);
+    void buildTreeBFS(Node* node, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments);
     void insertTask(std::vector<std::vector<int>>& assignment, int fromRobot, int taskIndex, int toRobot, int insertPos);
     void deleteTree(Node* node);
 

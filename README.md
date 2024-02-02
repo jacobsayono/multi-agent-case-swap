@@ -1,5 +1,12 @@
 # Multi-Agent Case Swap
 
+## The goal is to create layers of all possible swaps and design a mathematical heuristic to approach a lower bound on makespan
+![Tree](assets/tree.jpg)
+
+![DFS](assets/DFS.jpg)
+
+![BFS](assets/BFS.jpg)
+
 ## Example using 3 robots (X), 2 tasks (O) with cost from each robot to each task.
 
 ![Desc](assets/1-swap.jpg)
