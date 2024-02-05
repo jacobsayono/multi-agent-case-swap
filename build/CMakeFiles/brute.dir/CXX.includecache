@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jacobsayono/multi-agent-case-swap/include/node.h
+vector
+-
+
+/home/jacobsayono/multi-agent-case-swap/include/tree.h
+node.h
+/home/jacobsayono/multi-agent-case-swap/include/node.h
+vector
+-
+unordered_set
+-
+
+/home/jacobsayono/multi-agent-case-swap/src/main.cpp
+../include/tree.h
+/home/jacobsayono/multi-agent-case-swap/include/tree.h
+
+/home/jacobsayono/multi-agent-case-swap/src/node.cpp
+../include/node.h
+/home/jacobsayono/multi-agent-case-swap/include/node.h
+iostream
+-
+vector
+-
+
+/home/jacobsayono/multi-agent-case-swap/src/tree.cpp
+../include/tree.h
+/home/jacobsayono/multi-agent-case-swap/include/tree.h
+iostream
+-
+queue
+-
+vector
+-
+unordered_set
+-
+

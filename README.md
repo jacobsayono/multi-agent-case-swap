@@ -1,5 +1,16 @@
 # Multi-Agent Case Swap
 
+## Build using CMake.
+```
+git clone https://github.com/jacobsayono/multi-agent-case-swap.git
+cd multi-agent-case-swap
+mkdir build
+cd build
+cmake ..
+cmake --build .
+./brute
+```
+
 ## Tree class.
 ![Tree](assets/tree.jpg)
 

@@ -1,25 +1,23 @@
 #include "../include/tree.h"
+
+#include <iostream>
 #include <queue>
+#include <vector>
+#include <unordered_set>
 
-/*
-    assignment_tree
-        |_ node
-            |_ robot_number
-                |_ tasks_assigned -> create a child node for every task picked and placed everywhere
-                    |_ makespan
-                    |_ sum_of_costs
-            |_ child_node -> rinse and repeat node structure (recursive)
-*/
-
-/*
-    traverse the tree using either:
-        - DFS
-        - BFS
-*/
-
-/*
-    keep track of lowest makespan as we build the tree.
-*/
+struct VecVecHash {
+    // hash function that makes vector<vector<int>> (the assignment configuration) computable for a hash value
+    size_t operator()(const std::vector<std::vector<int>>& vv) const {
+        size_t hashValue = 0;
+        for (size_t i = 0; i < vv.size(); ++i) {
+            for (size_t j = 0; j < vv[i].size(); ++j) {
+                // combine the hash of the current number with the current hash value
+                hashValue = hashValue * 31 + std::hash<int>()(vv[i][j]);  // 31 prime number, close to 2^5 = 32
+            }
+        }
+        return hashValue;  // essentially converts vector<vector<int>> assignment into a hash value for the unordered_set
+    }
+};
 
 AssignmentTree::AssignmentTree(const std::vector<std::vector<int>>& rootAssignment, int maxLevel, BuildStrategy strategy) : root(new Node(rootAssignment)) {
     /*
@@ -39,17 +37,6 @@ AssignmentTree::AssignmentTree(const std::vector<std::vector<int>>& rootAssignme
 
 AssignmentTree::~AssignmentTree() {
     deleteTree(root);
-}
-
-AssignmentTree::Node::Node(const std::vector<std::vector<int>>& assignment) : assignment(assignment) {
-    std::cout << "new node created" << std::endl;
-    for (int i = 0; i < assignment.size(); ++i) {
-        std::cout << "robot " << i << std::endl;
-        for (int j = 0; j <assignment[i].size(); ++j) {
-            std::cout << assignment[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 void AssignmentTree::buildTreeDFS(Node* node, int currentLevel, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments) {
