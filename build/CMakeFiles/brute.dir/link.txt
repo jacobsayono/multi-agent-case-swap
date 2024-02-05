@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/brute.dir/src/node.cpp.o CMakeFiles/brute.dir/src/tree.cpp.o CMakeFiles/brute.dir/src/main.cpp.o  -o brute 
