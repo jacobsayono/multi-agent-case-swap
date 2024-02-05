@@ -1,6 +1,3 @@
-# Compilation g++
-a.out
-
 # Build output
 /build/
 /CMakeFiles/
