@@ -10,12 +10,12 @@ struct VecVecHash;  // forward declaration
 
 class AssignmentTree {
 public:
-    enum BuildStrategy {  // if want to customize each version, implement inheritance
+    enum BuildStrategy {  // if want to customize each version within AssignmentTree constructor, use inheritance
         DFS,
         BFS
     };
 
-    AssignmentTree(const std::vector<std::vector<int>>& initialAssignment, int maxLevel, BuildStrategy strategy);
+    AssignmentTree(const std::vector<std::vector<std::vector<float>>>& costs, const std::vector<std::vector<int>>& initialAssignment, int maxLevel, BuildStrategy strategy);
     ~AssignmentTree();
 
     void buildTreeDFS(Node* node, int currentLevel, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments);
@@ -25,6 +25,8 @@ public:
 
 private:
     Node* root;
+    const std::vector<std::vector<std::vector<float>>>& costs; // pointer to the costs matrix so that node can access it at the time of node construction
+
 };
 
 #endif  // TREE_H

@@ -5,8 +5,9 @@
 
 class Node {
 public:
-    Node(const std::vector<std::vector<int>>& assignment);  // initializer list
+    Node(const std::vector<std::vector<std::vector<float>>>& costs, const std::vector<std::vector<int>>& assignment);
 
+    void calcMetrics();  // calc makespan and sumOfCosts
     float getMakespan() const;
     float getSumOfCosts() const;
 
@@ -15,9 +16,10 @@ private:
 
     std::vector<std::vector<int>> assignment;
     std::vector<Node*> children;
-
+    
+    const std::vector<std::vector<std::vector<float>>>& costs; // reference to the costs matrix via tree class
     float makespan;
-    float sum_of_costs;
+    float sumOfCosts;
 };
 
 #endif  /* NODE_H */
