@@ -29,7 +29,7 @@ AssignmentTree::AssignmentTree(const std::vector<std::vector<std::vector<float>>
     seenAssignments.insert(rootAssignment); // Add the root assignment
 
     if (strategy == DFS) {
-        std::cout << std::endl << "GENERATING DEPTH-FIRST-SEARCH TREE..." << std::endl;
+        std::cout << "GENERATING DEPTH-FIRST-SEARCH TREE..." << std::endl;
         buildTreeDFS(root, 0, maxLevel, seenAssignments);
     } else if (strategy == BFS) {
         std::cout << "GENERATING BREADTH-FIRST-SEARCH TREE..." << std::endl << std::endl;
@@ -43,7 +43,7 @@ AssignmentTree::~AssignmentTree() {
 
 void AssignmentTree::buildTreeDFS(Node* node, int currentLevel, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments) {
     if (currentLevel == maxLevel) {
-        std::cout << "╚════════════ max layer arrived ════════════╝" << std::endl << std::endl;
+        std::cout << "╚════════════ max layer arrived ════════════╝" << std::endl;
         return;
     }
     std::cout << std::endl << "╔════════════════ new layer ════════════════╗" << std::endl;
@@ -101,7 +101,7 @@ void AssignmentTree::buildTreeBFS(Node* node, int maxLevel, std::unordered_set<s
         // Check for new level
         if (currentLevel > currentProcessingLevel) {
             currentProcessingLevel = currentLevel;
-            std::cout << "╔════════════ current layer: " << currentProcessingLevel + 1 << " ════════════╗" << std::endl << std::endl;
+            std::cout << "╔════════════ current layer: " << currentProcessingLevel + 1 << " ════════════╗" << std::endl;
         }
 
         if (currentLevel >= maxLevel) {

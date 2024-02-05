@@ -22,8 +22,8 @@ int main() {
   int layer = 3;
 
   /* generate all possible assignment configuration */
+  // AssignmentTree tree(costs, rootAssignment, layer, AssignmentTree::DFS);
   AssignmentTree tree(costs, rootAssignment, layer, AssignmentTree::BFS);
-  // AssignmentTree tree(rootAssignment, layer, AssignmentTree::BFS);
 
   /* output best node during tree traversal */
   tree.getBestNode()->print();
