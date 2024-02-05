@@ -34,7 +34,6 @@ void Node::calcMetrics() {
     }
     std::cout << "Makespan: " << makespan << std::endl;
     std::cout << "Sum of costs: " << sumOfCosts << std::endl;
-    std::cout << std::endl;
 }
 
 float Node::getMakespan() const {
@@ -46,7 +45,7 @@ float Node::getSumOfCosts() const {
 }
 
 void Node::print() const {
-    std::cout << std::endl << "Tree search complete!" << std::endl;
+    std::cout << "Tree search complete!" << std::endl;
     std::cout << "Best makespan: " << makespan << std::endl;
     std::cout << "Best sumOfCosts: " << sumOfCosts << std::endl;
     std::cout << std::endl << "Here's the task assignment configuration:" << std::endl;

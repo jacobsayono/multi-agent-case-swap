@@ -29,10 +29,10 @@ AssignmentTree::AssignmentTree(const std::vector<std::vector<std::vector<float>>
     seenAssignments.insert(rootAssignment); // Add the root assignment
 
     if (strategy == DFS) {
-        std::cout << "Generating DFS Tree..." << std::endl;
+        std::cout << std::endl << "GENERATING DEPTH-FIRST-SEARCH TREE..." << std::endl;
         buildTreeDFS(root, 0, maxLevel, seenAssignments);
     } else if (strategy == BFS) {
-        std::cout << "Generating BFS Tree..." << std::endl;
+        std::cout << "GENERATING BREADTH-FIRST-SEARCH TREE..." << std::endl << std::endl;
         buildTreeBFS(root, maxLevel, seenAssignments);
     }
 }
@@ -43,11 +43,10 @@ AssignmentTree::~AssignmentTree() {
 
 void AssignmentTree::buildTreeDFS(Node* node, int currentLevel, int maxLevel, std::unordered_set<std::vector<std::vector<int>>, VecVecHash>& seenAssignments) {
     if (currentLevel == maxLevel) {
-        std::cout << "============ max layer arrived ============" << std::endl << std::endl;
+        std::cout << "╚════════════ max layer arrived ════════════╝" << std::endl << std::endl;
         return;
     }
-    std::cout << std::endl;
-    std::cout << "============ new layer ============" << std::endl;
+    std::cout << std::endl << "╔════════════════ new layer ════════════════╗" << std::endl;
     for (int i = 0; i < node->assignment.size(); ++i) {  // iterate thru number of robots in multi-agent system
         for (int j = 0; j < node->assignment[i].size(); ++j) {  // iterate thru number of tasks in robot i
             for (int k = 0; k < node->assignment.size(); ++k) {  // iterate thru number of other robots
@@ -102,7 +101,7 @@ void AssignmentTree::buildTreeBFS(Node* node, int maxLevel, std::unordered_set<s
         // Check for new level
         if (currentLevel > currentProcessingLevel) {
             currentProcessingLevel = currentLevel;
-            std::cout << "============ current layer: " << currentProcessingLevel + 1 << " ============" << std::endl;
+            std::cout << "╔════════════ current layer: " << currentProcessingLevel + 1 << " ════════════╗" << std::endl << std::endl;
         }
 
         if (currentLevel >= maxLevel) {
