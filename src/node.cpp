@@ -4,9 +4,9 @@
 #include <vector>
 
 Node::Node(const std::vector<std::vector<std::vector<float>>>& costs, const std::vector<std::vector<int>>& assignment) : costs(costs), assignment(assignment), makespan(0), sumOfCosts(0) {
-    std::cout << "new node created" << std::endl;
+    std::cout << "[New node created]" << std::endl;
     for (int i = 0; i < assignment.size(); ++i) {
-        std::cout << "robot " << i << std::endl;
+        std::cout << "robot " << i << ":" << std::endl;
         for (int j = 0; j <assignment[i].size(); ++j) {
             std::cout << assignment[i][j] << " ";
         }
@@ -43,4 +43,18 @@ float Node::getMakespan() const {
 
 float Node::getSumOfCosts() const {
     return sumOfCosts;
+}
+
+void Node::print() const {
+    std::cout << std::endl << "Tree search complete!" << std::endl;
+    std::cout << "Best makespan: " << makespan << std::endl;
+    std::cout << "Best sumOfCosts: " << sumOfCosts << std::endl;
+    std::cout << std::endl << "Here's the task assignment configuration:" << std::endl;
+    for (size_t i = 0; i < assignment.size(); ++i) {
+        std::cout << "robot " << i << ":" << std::endl;
+        for (size_t j = 0; j < assignment[i].size(); ++j) {
+            std::cout << assignment[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
 }

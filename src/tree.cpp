@@ -19,7 +19,7 @@ struct VecVecHash {
     }
 };
 
-AssignmentTree::AssignmentTree(const std::vector<std::vector<std::vector<float>>>& costs, const std::vector<std::vector<int>>& rootAssignment, int maxLevel, BuildStrategy strategy) : root(new Node(costs, rootAssignment)), costs(costs) {
+AssignmentTree::AssignmentTree(const std::vector<std::vector<std::vector<float>>>& costs, const std::vector<std::vector<int>>& rootAssignment, int maxLevel, BuildStrategy strategy) : root(new Node(costs, rootAssignment)), costs(costs), bestMakespan(std::numeric_limits<float>::max()), bestSumOfCosts(std::numeric_limits<float>::max()) {
     /*
         - the first parameter tells the container what type of elements it will hold
         - the second parameter provides the mechanism for generating hash values from elements of that type, which is crucial for the container's internal organization, lookup, insertion, and deletion operations
@@ -29,8 +29,10 @@ AssignmentTree::AssignmentTree(const std::vector<std::vector<std::vector<float>>
     seenAssignments.insert(rootAssignment); // Add the root assignment
 
     if (strategy == DFS) {
+        std::cout << "Generating DFS Tree..." << std::endl;
         buildTreeDFS(root, 0, maxLevel, seenAssignments);
     } else if (strategy == BFS) {
+        std::cout << "Generating BFS Tree..." << std::endl;
         buildTreeBFS(root, maxLevel, seenAssignments);
     }
 }
@@ -59,6 +61,16 @@ void AssignmentTree::buildTreeDFS(Node* node, int currentLevel, int maxLevel, st
                         // check if the new assignment is already seen
                         if (seenAssignments.find(newAssignment) == seenAssignments.end()) {  // if not found, find() returns an iterator equal to end(), indicating the element is absent, so proceed
                             Node* newNode = new Node(costs, newAssignment);
+
+                            // tracking best makespan and sumOfCosts
+                            float newNodeMakespan = newNode->getMakespan();
+                            float newNodeSumOfCosts = newNode->getSumOfCosts();
+                            if (newNodeMakespan < bestMakespan || (newNodeMakespan == bestMakespan && newNodeSumOfCosts < bestSumOfCosts)) {
+                                bestMakespan = newNodeMakespan;
+                                bestSumOfCosts = newNodeSumOfCosts;
+                                bestNode = newNode;
+                            }
+
                             node->children.push_back(newNode);
                             seenAssignments.insert(newAssignment);  // mark this new assignment as seen
 
@@ -108,6 +120,16 @@ void AssignmentTree::buildTreeBFS(Node* node, int maxLevel, std::unordered_set<s
                             if (seenAssignments.insert(newAssignment).second) {
                                 // if not seen, create a new node, add it to the queue and seenAssignments
                                 Node* newNode = new Node(costs, newAssignment);
+
+                                // tracking best makespan and sumOfCosts
+                                float newNodeMakespan = newNode->getMakespan();
+                                float newNodeSumOfCosts = newNode->getSumOfCosts();
+                                if (newNodeMakespan < bestMakespan || (newNodeMakespan == bestMakespan && newNodeSumOfCosts < bestSumOfCosts)) {
+                                    bestMakespan = newNodeMakespan;
+                                    bestSumOfCosts = newNodeSumOfCosts;
+                                    bestNode = newNode;
+                                }
+
                                 currentNode->children.push_back(newNode);
                                 nodeQueue.push(std::make_pair(newNode, currentLevel + 1));
                                 seenAssignments.insert(newAssignment); // mark as seen
@@ -136,4 +158,8 @@ void AssignmentTree::deleteTree(Node* node) {
         deleteTree(child);
     }
     delete node;
+}
+
+Node* AssignmentTree::getBestNode() const {
+    return bestNode;
 }

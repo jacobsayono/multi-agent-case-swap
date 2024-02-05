@@ -10,6 +10,7 @@ public:
     void calcMetrics();  // calc makespan and sumOfCosts
     float getMakespan() const;
     float getSumOfCosts() const;
+    void print() const;
 
 private:
     friend class AssignmentTree;

@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <limits>
 
 struct VecVecHash;  // forward declaration
 
@@ -23,10 +24,17 @@ public:
     void insertTask(std::vector<std::vector<int>>& assignment, int fromRobot, int taskIndex, int toRobot, int insertPos);
     void deleteTree(Node* node);
 
+    // tracking best makespan and sumOfCosts
+    Node* getBestNode() const;
+
 private:
     Node* root;
     const std::vector<std::vector<std::vector<float>>>& costs; // pointer to the costs matrix so that node can access it at the time of node construction
 
+    // tracking best makespan and sumOfCosts
+    Node* bestNode;
+    float bestMakespan;
+    float bestSumOfCosts;
 };
 
 #endif  // TREE_H
