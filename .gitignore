@@ -1,2 +1,63 @@
-.vscode
+# Compilation g++
 a.out
+
+# Build output
+/build/
+/CMakeFiles/
+*.cmake
+CMakeCache.txt
+Makefile
+*.make
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Static and Dynamic Libs
+*.lib
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# IDE and editor folders
+/.vscode/
+/.idea/
+*.swp
+
+# macOS specific
+.DS_Store
+
+# Temporary files
+*.log
+*.tmp
+*~
