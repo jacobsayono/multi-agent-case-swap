@@ -19,7 +19,7 @@ int main() {
   // std::vector<std::vector<int>> rootAssignment = {{1, 2},{3, 4},{5, 6}};
 
   /* depth search value */
-  int layer = 3;
+  int layer = 4;
 
   /* generate all possible assignment configuration */
   // AssignmentTree tree(costs, rootAssignment, layer, AssignmentTree::DFS);
